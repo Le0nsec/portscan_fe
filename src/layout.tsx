@@ -3,14 +3,7 @@ import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
-  IconDashboard,
   IconList,
-  IconSettings,
-  IconFile,
-  IconApps,
-  IconCheckCircle,
-  IconExclamationCircle,
-  IconUser,
   IconMenuFold,
   IconMenuUnfold,
 } from '@arco-design/web-react/icon';
@@ -35,22 +28,8 @@ const Content = Layout.Content;
 
 function getIconFromKey(key) {
   switch (key) {
-    case 'dashboard':
-      return <IconDashboard className={styles.icon} />;
-    case 'list':
+    case 'scan':
       return <IconList className={styles.icon} />;
-    case 'form':
-      return <IconSettings className={styles.icon} />;
-    case 'profile':
-      return <IconFile className={styles.icon} />;
-    case 'visualization':
-      return <IconApps className={styles.icon} />;
-    case 'result':
-      return <IconCheckCircle className={styles.icon} />;
-    case 'exception':
-      return <IconExclamationCircle className={styles.icon} />;
-    case 'user':
-      return <IconUser className={styles.icon} />;
     default:
       return <div className={styles['icon-empty']} />;
   }
@@ -96,7 +75,8 @@ function PageLayout() {
   const [routes, defaultRoute] = useRoute(userInfo?.permissions);
   const defaultSelectedKeys = [currentComponent || defaultRoute];
   const paths = (currentComponent || defaultRoute).split('/');
-  const defaultOpenKeys = paths.slice(0, paths.length - 1);
+  // const defaultOpenKeys = paths.slice(0, paths.length - 1);
+  const defaultOpenKeys = ['scan'];
 
   const [breadcrumb, setBreadCrumb] = useState([]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -235,6 +215,7 @@ function PageLayout() {
             >
               <div className={styles['menu-wrapper']}>
                 <Menu
+                  autoOpen={true}
                   collapse={collapsed}
                   onClickMenuItem={onClickMenuItem}
                   selectedKeys={selectedKeys}

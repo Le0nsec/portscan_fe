@@ -20,7 +20,7 @@ import './mock';
 const store = createStore(rootReducer);
 
 function Index() {
-  const [lang, setLang] = useStorage('arco-lang', 'en-US');
+  const [lang, setLang] = useStorage('arco-lang', 'zh-CN');
   const [theme, setTheme] = useStorage('arco-theme', 'light');
 
   function getArcoLocale() {
@@ -34,26 +34,26 @@ function Index() {
     }
   }
 
-  function fetchUserInfo() {
-    store.dispatch({
-      type: 'update-userInfo',
-      payload: { userLoading: true },
-    });
-    axios.get('/api/user/userInfo').then((res) => {
-      store.dispatch({
-        type: 'update-userInfo',
-        payload: { userInfo: res.data, userLoading: false },
-      });
-    });
-  }
+  // function fetchUserInfo() {
+  //   store.dispatch({
+  //     type: 'update-userInfo',
+  //     payload: { userLoading: true },
+  //   });
+  //   axios.get('/api/user/userInfo').then((res) => {
+  //     store.dispatch({
+  //       type: 'update-userInfo',
+  //       payload: { userInfo: res.data, userLoading: false },
+  //     });
+  //   });
+  // }
 
-  useEffect(() => {
-    if (checkLogin()) {
-      fetchUserInfo();
-    } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
-      window.location.pathname = '/login';
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (checkLogin()) {
+  //     fetchUserInfo();
+  //   } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
+  //     window.location.pathname = '/login';
+  //   }
+  // }, []);
 
   useEffect(() => {
     changeTheme(theme);
@@ -85,7 +85,7 @@ function Index() {
         <Provider store={store}>
           <GlobalContext.Provider value={contextValue}>
             <Switch>
-              <Route path="/login" component={Login} />
+              {/* <Route path="/login" component={Login} /> */}
               <Route path="/" component={PageLayout} />
             </Switch>
           </GlobalContext.Provider>
