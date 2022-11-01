@@ -18,11 +18,11 @@ export const routes: IRoute[] = [
     children: [
       {
         name: 'menu.scan.create',
-        key: 'list/create',
+        key: 'scan/create',
       },
       {
         name: 'menu.scan.records',
-        key: 'list/records',
+        key: 'scan/records',
       },
       // {
       //   name: 'menu.scan.detail',

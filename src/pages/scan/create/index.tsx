@@ -3,15 +3,16 @@ import {
   Steps,
   Form,
   Input,
-  Select,
-  DatePicker,
   Button,
   Typography,
   Space,
   Card,
   InputNumber,
   Result,
+  Message,
 } from '@arco-design/web-react';
+import axios from 'axios';
+import './mock';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
@@ -20,6 +21,8 @@ const { Title, Paragraph } = Typography;
 function StepForm() {
   const t = useLocale(locale);
   const [current, setCurrent] = useState(1);
+  const [loading, setLoading] = useState(false);
+
 
   const [form] = Form.useForm();
 
@@ -49,8 +52,35 @@ function StepForm() {
           className={styles.form}
           initialValues={{ threads: 20, timeout: 4000 }}
           onSubmit={(values) => {
-            setCurrent(current + 1);
-            console.log(values);
+            setLoading(true);
+            axios
+              .post('/api/scan/create', values)
+              .then((res) => {
+                // console.log(res)
+                const { code, msg, data } = res.data;
+                if (code === 200) {
+                  Message.success({
+                    content: t['stepForm.created.success.title'],
+                    closable: true,
+                  });
+                  setCurrent(current + 1);
+                } else {
+                  Message.error({
+                    content: msg,
+                    closable: true,
+                  });
+                }
+              })
+              .catch(function (error) {
+                Message.error({
+                  content: 'Request failed!',
+                  closable: true,
+                });
+                console.log(error);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
           }}
           >
             {current === 1 && (
@@ -130,7 +160,7 @@ function StepForm() {
             {current !== 2 ? (
               <Form.Item label=" ">
                 <Space size={24}>
-                  <Button type="primary" size="large" htmlType='submit'>
+                  <Button type="primary" size="large" htmlType='submit' loading={loading}>
                     {t['stepForm.submit']}
                   </Button>
                   <Button size="large" onClick={() => {form.resetFields();}}>
@@ -159,7 +189,7 @@ function StepForm() {
             <Title heading={6}>{t['stepForm.created.extra.title']}</Title>
             <Paragraph type="secondary">
               {t['stepForm.created.extra.desc']}
-              <Button type="text" href={'/list/records'}>{t['stepForm.created.extra.detail']}</Button>
+              <Button type="text" href={'/scan/records'}>{t['stepForm.created.extra.detail']}</Button>
             </Paragraph>
           </div>
         )}
