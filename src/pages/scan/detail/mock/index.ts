@@ -3,50 +3,63 @@ import setupMock from '@/utils/setupMock';
 
 setupMock({
   setup: () => {
-    Mock.mock(new RegExp('/api/basicProfile'), () => {
+    Mock.mock(new RegExp('/api/scan/detail/'), () => {
       return {
-        status: 2,
-        video: {
-          mode: '自定义',
-          acquisition: {
-            resolution: '720*1280',
-            frameRate: 15,
-          },
-          encoding: {
-            resolution: '720*1280',
-            rate: {
-              min: 300,
-              max: 800,
-              default: 1500,
+        code: 200,
+        msg: 'success',
+        data: {
+          status: 4,
+          list: [
+            {
+              host: '192.168.1.1',
+              port_list: [
+                {
+                  port: 80,
+                  resp: 'HTTP/1.1 403 Forbidden nginx text/html',
+                },
+                {
+                  port: 443,
+                  resp: '',
+                },
+                {
+                  port: 1443,
+                  resp: 'HTTP/1.1 403 Forbidden Apache text/html; charset=iso-8859-1',
+                }
+              ]
             },
-            frameRate: 15,
-            profile: 'high',
-          },
-        },
-        audio: {
-          mode: '自定义',
-          acquisition: {
-            channels: 8,
-          },
-          encoding: {
-            channels: 8,
-            rate: 128,
-            profile: 'ACC-LC',
-          },
-        },
-      };
+            {
+              host: '192.168.1.2',
+              port_list: [
+                {
+                  port: 80,
+                  resp: 'HTTP/1.1 403 Forbidden nginx text/html',
+                },
+                {
+                  port: 8080,
+                  resp: 'HTTP/1.1 404 Forbidden nginx text/html',
+                }
+              ]
+            },
+            {
+              host: '192.168.1.3',
+              port_list: [
+                {
+                  port: 80,
+                  resp: 'HTTP/1.1 403 Forbidden nginx text/html',
+                }
+              ]
+            },
+          ]
+        }
+      }
+
+      // return {
+      //   code: 400,
+      //   msg: 'Host Range is invalid!',
+      //   data: {}
+      // };
+
     });
 
-    Mock.mock(new RegExp('/api/adjustment'), () => {
-      return new Array(2).fill('0').map(() => ({
-        contentId: `${Mock.Random.pick([
-          '视频类',
-          '音频类',
-        ])}${Mock.Random.natural(1000, 9999)}`,
-        content: '视频参数变更，音频参数变更',
-        status: Mock.Random.natural(0, 1),
-        updatedTime: Mock.Random.datetime('yyyy-MM-dd HH:mm:ss'),
-      }));
-    });
   },
 });

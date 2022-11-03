@@ -6,8 +6,7 @@ import {
   Grid,
   Space,
   Button,
-  Table,
-  Badge,
+  Message,
 } from '@arco-design/web-react';
 import axios from 'axios';
 import useLocale from '@/utils/useLocale';
@@ -16,54 +15,43 @@ import ProfileItem from './item';
 import styles from './style/index.module.less';
 import './mock';
 
-function BasicProfile() {
+function Detail() {
   const t = useLocale(locale);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({ status: 1 });
-  const [preLoading, setPreLoading] = useState(false);
-  const [preData, setPreData] = useState({});
-  const [tableLoading, setTableLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [data, setData] = useState({ status: 2 });
 
   function fetchData() {
     setLoading(true);
+    // 获取url path中的id
+    const id = window.location.pathname.split('/').pop();
     axios
-      .get('/api/basicProfile')
+      .get('/api/scan/detail/' + id)
       .then((res) => {
-        setData(res.data || {});
+        console.log(res.data);
+        const { code, msg, data } = res.data;
+        if (code === 200) {
+          setData(data || {});
+        } else {
+          Message.error({
+            content: msg,
+            closable: true,
+          });
+        }
+      })
+      .catch(function (error) {
+        Message.error({
+          content: 'Request failed!',
+          closable: true,
+        });
+        console.log(error);
       })
       .finally(() => {
         setLoading(false);
       });
   }
 
-  function fetchPreData() {
-    setPreLoading(true);
-    axios
-      .get('/api/basicProfile')
-      .then((res) => {
-        setPreData(res.data || {});
-      })
-      .finally(() => {
-        setPreLoading(false);
-      });
-  }
-
-  function fetchTableData() {
-    setTableLoading(true);
-    axios
-      .get('/api/adjustment')
-      .then((res) => {
-        setTableData(res.data);
-      })
-      .finally(() => {
-        setTableLoading(false);
-      });
-  }
   useEffect(() => {
     fetchData();
-    fetchPreData();
-    fetchTableData();
   }, []);
 
   return (
@@ -77,8 +65,8 @@ function BasicProfile() {
           </Grid.Col>
           <Grid.Col span={8} style={{ textAlign: 'right' }}>
             <Space>
-              <Button>{t['basicProfile.cancel']}</Button>
-              <Button type="primary">{t['basicProfile.goBack']}</Button>
+              {/* <Button>{t['basicProfile.cancel']}</Button> */}
+              <Button type="primary" href={'/scan/records'}>{t['basicProfile.goBack']}</Button>
             </Space>
           </Grid.Col>
         </Grid.Row>
@@ -91,74 +79,11 @@ function BasicProfile() {
       </Card>
 
       <ProfileItem
-        title={t['basicProfile.title.currentParams']}
         data={data}
-        type="current"
         loading={loading}
       />
-      <ProfileItem
-        title={t['basicProfile.title.originParams']}
-        data={preData}
-        type="origin"
-        loading={preLoading}
-      />
-      <Card>
-        <Typography.Title heading={6}>
-          {t['basicProfile.adjustment.record']}
-        </Typography.Title>
-        <Table
-          loading={tableLoading}
-          data={tableData}
-          columns={[
-            {
-              dataIndex: 'contentId',
-              title: t['basicProfile.adjustment.contentId'],
-            },
-            {
-              dataIndex: 'content',
-              title: t['basicProfile.adjustment.content'],
-            },
-            {
-              dataIndex: 'status',
-              title: t['basicProfile.adjustment.status'],
-              render: (status) => {
-                if (status) {
-                  return (
-                    <Badge
-                      status="success"
-                      text={t['basicProfile.adjustment.success']}
-                    />
-                  );
-                }
-
-                return (
-                  <Badge
-                    status="processing"
-                    text={t['basicProfile.adjustment.waiting']}
-                  />
-                );
-              },
-            },
-            {
-              dataIndex: 'updatedTime',
-              title: t['basicProfile.adjustment.updatedTime'],
-            },
-            {
-              title: t['basicProfile.adjustment.operation'],
-              headerCellStyle: { paddingLeft: '15px' },
-              render() {
-                return (
-                  <Button type="text">
-                    {t['basicProfile.adjustment.operation.view']}
-                  </Button>
-                );
-              },
-            },
-          ]}
-        />
-      </Card>
     </div>
   );
 }
 
-export default BasicProfile;
+export default Detail;

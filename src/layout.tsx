@@ -260,7 +260,7 @@ function PageLayout() {
                     <Redirect to={`/${defaultRoute}`} />
                   </Route>
                   <Route
-                    path="/scan/detail/*"
+                    path="/scan/detail/:id"
                     component={lazyload(() => import('./pages/scan/detail'))}
                   />
                   <Route

@@ -24,10 +24,6 @@ export const routes: IRoute[] = [
         name: 'menu.scan.records',
         key: 'scan/records',
       },
-      // {
-      //   name: 'menu.scan.detail',
-      //   key: 'scan/detail',
-      // },
     ],
   },
 ];

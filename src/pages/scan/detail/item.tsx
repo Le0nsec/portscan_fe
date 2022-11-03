@@ -1,19 +1,17 @@
 import React, { CSSProperties } from 'react';
 import useLocale from '@/utils/useLocale';
-import { Descriptions, Card, Skeleton } from '@arco-design/web-react';
+import { Descriptions, Card, Skeleton, Empty, Spin } from '@arco-design/web-react';
 import locale from './locale';
 
 interface ProfileItemProps {
-  title: string;
   data: any;
   style?: CSSProperties;
-  type: 'origin' | 'current';
   loading?: boolean;
 }
 
 function ProfileItem(props: ProfileItemProps) {
   const t = useLocale(locale);
-  const { title, data, type, loading } = props;
+  const { data, loading } = props;
   const blockDataList: {
     title: string;
     data: {
@@ -22,95 +20,54 @@ function ProfileItem(props: ProfileItemProps) {
     }[];
   }[] = [];
 
-  blockDataList.push({
-    title: t[`basicProfile.title.${type}Video`],
-    data: [
-      {
-        label: t['basicProfile.label.video.mode'],
-        value: data?.video?.mode || '-',
-      },
-      {
-        label: t['basicProfile.label.video.acquisition.resolution'],
-        value: data?.video?.acquisition.resolution || '-',
-      },
-      {
-        label: t['basicProfile.label.video.acquisition.frameRate'],
-        value: `${data?.video?.acquisition.frameRate || '-'} fps`,
-      },
-      {
-        label: t['basicProfile.label.video.encoding.resolution'],
-        value: data?.video?.encoding.resolution || '-',
-      },
-      {
-        label: t['basicProfile.label.video.encoding.rate.min'],
-        value: `${data?.video?.encoding.rate.min || '-'} bps`,
-      },
-      {
-        label: t['basicProfile.label.video.encoding.rate.max'],
-        value: `${data?.video?.encoding.rate.max || '-'} bps`,
-      },
-      {
-        label: t['basicProfile.label.video.encoding.rate.default'],
-        value: `${data?.video?.encoding.rate.default || '-'} bps`,
-      },
-      {
-        label: t['basicProfile.label.video.encoding.frameRate'],
-        value: `${data?.video?.encoding.frameRate || '-'} fpx`,
-      },
-      {
-        label: t['basicProfile.label.video.encoding.profile'],
-        value: data?.video?.encoding.profile || '-',
-      },
-    ],
-  });
+  console.log(data);
+  if (data.status === 2){
+    return (
+      <Card loading={loading} >
+        <Empty />
+      </Card>
+    );
+  }else if (data.status === 4){
 
-  blockDataList.push({
-    title: t[`basicProfile.title.${type}Audio`],
-    data: [
-      {
-        label: t['basicProfile.label.audio.mode'],
-        value: data?.audio?.mode || '-',
-      },
-      {
-        label: t['basicProfile.label.audio.acquisition.channels'],
-        value: `${data?.audio?.acquisition.channels || '-'} ${
-          t['basicProfile.unit.audio.channels']
-        }`,
-      },
-      {
-        label: t['basicProfile.label.audio.encoding.channels'],
-        value: `${data?.audio?.encoding.channels || '-'} ${
-          t['basicProfile.unit.audio.channels']
-        }`,
-      },
-      {
-        label: t['basicProfile.label.audio.encoding.rate'],
-        value: `${data?.audio?.encoding.rate || '-'} kbps`,
-      },
-      {
-        label: t['basicProfile.label.audio.encoding.profile'],
-        value: data?.audio?.encoding.profile || '-',
-      },
-    ],
-  });
+    data?.list?.map((item) => {
+      const port_lists = item?.port_list?.map((portItem, j) => {
+        return [{
+          label: t['basicProfile.label.port'],
+          value: portItem.port || '',
+        },{
+          label: t['basicProfile.label.resp'],
+          value: portItem.resp || '',
+        }];
+      });
+      let portItemsArr = [];
+      port_lists?.map((portItem) => {
+        portItemsArr = portItemsArr.concat(portItem);
+      });
+
+      const dataList = {
+        title: item.host,
+        data: portItemsArr
+      }
+      blockDataList.push(dataList);
+    });
+
+  }
 
   return (
     <Card>
       <div>
         {blockDataList.map(({ title: blockTitle, data: blockData }, index) => (
           <Descriptions
-            key={`${index}`}
-            colon=":"
-            labelStyle={{ textAlign: 'right', width: 200, paddingRight: 10 }}
-            valueStyle={{ width: 400 }}
+            border
             title={blockTitle}
+            column={2}
             data={
               loading
                 ? blockData.map((item) => ({
                     ...item,
                     value: (
                       <Skeleton
-                        text={{ rows: 1, style: { width: '200px' } }}
+                        text={{ rows: 1, style: { width: '300px' } }}
                         animation
                       />
                     ),
