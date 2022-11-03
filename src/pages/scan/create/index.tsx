@@ -53,6 +53,7 @@ function StepForm() {
           initialValues={{ threads: 20, timeout: 4000 }}
           onSubmit={(values) => {
             setLoading(true);
+            console.log(values)
             axios
               .post('/api/scan/create', values)
               .then((res) => {

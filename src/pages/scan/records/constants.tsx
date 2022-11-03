@@ -33,9 +33,9 @@ export function getColumns(
     },
     {
       title: t['searchTable.columns.createdTime'],
-      dataIndex: 'createdTime',
+      dataIndex: 'created',
       render: (x) => dayjs.unix(x).format('YYYY-MM-DD HH:mm:ss'),
-      sorter: (a, b) => b.createdTime - a.createdTime,
+      sorter: (a, b) => b.created - a.created,
     },
     {
       title: t['searchTable.columns.status'],
