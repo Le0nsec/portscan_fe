@@ -55,14 +55,18 @@ function SearchTable() {
       .then((res) => {
         const { code, msg, data } = res.data;
         if (code === 200) {
-          setData(data.list);
-          setPatination({
-            ...pagination,
-            current,
-            pageSize,
-            total: data.total,
-          });
-          setLoading(false);
+          if (data.total === 0) {
+            setLoading(false);
+          }else{
+            setData(data.list);
+            setPatination({
+              ...pagination,
+              current,
+              pageSize,
+              total: data.total,
+            });
+            setLoading(false);
+          }
         } else {
           Message.error({
             content: msg,

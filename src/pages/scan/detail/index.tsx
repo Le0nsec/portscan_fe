@@ -30,6 +30,12 @@ function Detail() {
         console.log(res.data);
         const { code, msg, data } = res.data;
         if (code === 200) {
+          if (data.status === 0) {
+            data.status = 2;
+          }
+          if (data.status === 1) {
+            data.status = 4;
+          }
           setData(data || {});
         } else {
           Message.error({
@@ -39,8 +45,8 @@ function Detail() {
         }
       })
       .catch(function (error) {
-        Message.error({
-          content: 'Request failed!',
+        Message.warning({
+          content: '扫描中',
           closable: true,
         });
         console.log(error);
